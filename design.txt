@@ -1,5 +1,16 @@
 Create a python project that will use ollama to progressively build a stable diffusion prompt.
-Input is received line by line until "THE END" is encounter at which point the program ends.
+The program accepts input in two ways:
+1. **Interactive mode** – Input is received line by line until a line containing exactly **THE END** is encountered, then the program ends.
+2. **File mode** – Command‑line arguments are treated as filenames. The files are read in the order provided, their contents are concatenated, and the combined text is sent to Ollama in a single prompt (no **THE END** required).
+
+For each input (whether interactive or from files), Ollama is given a prompt that builds a mental image and returns the following items:
+* Positive Stable Diffusion prompt
+* Negative Stable Diffusion prompt
+* CFG Scale
+* Optimum Image Resolution
+* Steps (Up to 500)
+* Scheduler (one of the listed options)
+Additionally, the prompt now includes the instruction **“Use proper weights for drawn elements.”** to guide Ollama’s weighting of visual components.
 For each line received, ollama is given the appropriate prompt that builds a mental image inside of its context,  and then output following items that are projected based on that mental image:
 * Positive Stable Diffusion prompt
 * Negative Stable Diffusion prompt
@@ -39,4 +50,3 @@ For each line received, ollama is given the appropriate prompt that builds a men
   - UniPC Karras
 * Assume the model is Juggernaut XL v9
 * No LoRA
-
