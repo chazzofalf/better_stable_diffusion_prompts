@@ -48,6 +48,48 @@ def call_ollama(prompt: str) -> str:
         )
 
 def main():
+    # If command‑line arguments are supplied, treat each as a filename.
+    # Read all files in the order provided, concatenate their contents,
+    # send a single prompt to Ollama, output the result, save the context
+    # to cline.md and exit.
+    if len(sys.argv) > 1:
+        filenames = sys.argv[1:]
+        # Read and concatenate file contents with newline separation
+        try:
+            contents = []
+            for fname in filenames:
+                with open(fname, "r", encoding="utf-8") as f:
+                    contents.append(f.read())
+            context = "\n".join(contents)
+        except Exception as e:
+            print(f"Error reading input files: {e}")
+            sys.exit(1)
+
+        # Build prompt for Ollama using the full concatenated context
+        ollama_prompt = (
+            f"Based on the accumulated description:{context}\n"
+            "Provide the following items:\n"
+            "- Positive Stable Diffusion prompt\n"
+            "- Negative Stable Diffusion prompt\n"
+            "- CFG Scale\n"
+            "- Optimum Image Resolution\n"
+            "- Steps (up to 500)\n"
+            f"- Scheduler (choose from the allowed list): {', '.join(SCHEDULERS)}\n"
+            "Assume model gemma3:27b, no LoRA."
+        )
+        output = call_ollama(ollama_prompt)
+
+        # Output the generated parameters
+        print("\n--- Generated Stable Diffusion Parameters ---")
+        print(output)
+        print("--- End --------------------------------------\n")
+
+        # Context saving removed (file input mode)
+
+        # Exit after processing file inputs
+        sys.exit(0)
+
+    # No command‑line arguments: fall back to interactive line‑by‑line mode
     print("Enter lines of description (type 'THE END' on a line by itself to finish):")
     context = ""
     for line in sys.stdin:
@@ -57,13 +99,25 @@ def main():
         # Append to mental context
         context += f"\n{line}"
         # Build prompt for Ollama
-        ollama_prompt = f"Based on the accumulated description:{context}\nProvide the following items:\n- Positive Stable Diffusion prompt\n- Negative Stable Diffusion prompt\n- CFG Scale\n- Optimum Image Resolution\n- Steps (up to 500)\n- Scheduler (choose from the allowed list): {', '.join(SCHEDULERS)}\nAssume model gemma3:27b, no LoRA."
+        ollama_prompt = (
+            f"Based on the accumulated description:{context}\n"
+            "Provide the following items:\n"
+            "- Positive Stable Diffusion prompt\n"
+            "- Negative Stable Diffusion prompt\n"
+            "- CFG Scale\n"
+            "- Optimum Image Resolution\n"
+            "- Steps (up to 500)\n"
+            f"- Scheduler (choose from the allowed list): {', '.join(SCHEDULERS)}\n"
+            "Assume model gemma3:27b, no LoRA."
+        )
         output = call_ollama(ollama_prompt)
 
         # Output the generated parameters
         print("\n--- Generated Stable Diffusion Parameters ---")
         print(output)
         print("--- End --------------------------------------\n")
+
+        # Context saving removed (interactive mode)
 
     print("Program terminated. No further input will be processed.")
 
