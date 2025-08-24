@@ -1,109 +1,101 @@
 # Project Context
 
-## cline.md (original)
-# Stable Diffusion Prompt Builder Project
-
 ## Overview
-Created a Python script `main.py` that reads lines from standard input until the sentinel line **THE END** is encountered.  
-For each line, the script builds an accumulating description, sends a prompt to Ollama (using the Juggernaut XL v9 model, no LoRA) and outputs a set of Stable Diffusion parameters:
+This repository implements a **Stable Diffusion Prompt Builder** using Ollama.  
+The core script (`main.py`) can operate in two modes:
 
-- Positive Stable Diffusion prompt  
-- Negative Stable Diffusion prompt  
-- CFG Scale  
-- Optimum Image Resolution  
-- Steps (up to 500)  
-- Scheduler (chosen from the allowed list)
+1. **Interactive mode** – reads lines from stdin until a line containing exactly `THE END` is entered.  
+2. **File mode** – accepts one or more filenames as command‑line arguments, concatenates their contents (newline‑separated), and sends the combined text to Ollama in a single prompt.
 
-The current implementation includes a placeholder `call_ollama` function that generates deterministic dummy data; it can be replaced with a real Ollama API/CLI call.
+For each input (interactive line or concatenated file text) Ollama is prompted to generate:
 
-## Files
-- **main.py** – Core script implementing the described functionality (see file content in the repository).
+* Positive Stable Diffusion prompt  
+* Negative Stable Diffusion prompt  
+* CFG Scale  
+* Optimum Image Resolution  
+* Steps (up to 500)  
+* Scheduler (chosen from a predefined list)
 
-## Task Progress
-- [x] Analyze requirements
-- [x] Set up necessary files
-- [x] Implement main functionality
-- [ ] Handle edge cases
-- [ ] Test the implementation
-- [ ] Verify results
+The prompt always includes the instruction **“Use proper weights for drawn elements.”** and references **model Juggernaut XL v9, no LoRA**.  
+The actual CLI call uses the placeholder model `gemma3:27b` (`ollama run gemma3:27b …`). If the Ollama CLI fails, a deterministic placeholder output is returned.
 
-## Assistant Context
-Implemented full support for command‑line file input (concatenating files in the order provided), interactive line‑by‑line mode with `THE END` sentinel, updated the Ollama model to **gemma3:27b**, included the full scheduler list in the prompt, added deterministic placeholder output for fallback, and removed all previous attempts to write context to `cline.md` as requested. The script now prints Ollama’s raw, human‑readable response for each invocation.
-
-## Assistant Context Update (2025-08-24)
-- Added the final version of the script with correct model prompt (“Assume model Juggernaut XL v9, no LoRA”) while keeping the CLI call to `gemma3:27b` as required.
-- Ensured command‑line file input processes files in the order given and exits without waiting for `THE END`.
-- Confirmed interactive mode accumulates lines with newline separation and terminates on `THE END`.
-- Removed all code that wrote context to `cline.md` as previously requested.
-- Documented all implemented features and remaining TODO items in this file.
-
-## Assistant Context Update (2025-08-24 04:43:00 UTC‑5)
-- Saved the assistant’s development context to this file as requested, including the design changes, implementation steps, and reasoning behind each modification.
-- Updated the design specification (design.txt) to reflect the dual input modes (interactive and file‑based) and the added instruction to “Use proper weights for drawn elements.”
-- Ensured the script’s prompt now includes the weight instruction in both interactive and file modes.
-- Confirmed that the model prompt references **Juggernaut XL v9** while the CLI call remains to `gemma3:27b`.
-- Verified that no code writes context to `cline.md` during execution, satisfying the user’s earlier request.
-- Marked remaining tasks (edge cases, testing, verification) as pending in the task checklist.
+An optional `-o <filename>` flag allows the generated parameters to be appended to a file in addition to stdout.
 
 ---
 
-## design.txt
-Create a python project that will use ollama to progressively build a stable diffusion prompt.
+## Design Specification (design.txt)
+
+Create a Python project that uses Ollama to progressively build a Stable Diffusion prompt.
+
 The program accepts input in two ways:
+
 1. **Interactive mode** – Input is received line by line until a line containing exactly **THE END** is encountered, then the program ends.
-2. **File mode** – Command‑line arguments are treated as filenames. The files are read in the order provided, their contents are concatenated, and the combined text is sent to Ollama in a single prompt (no **THE END** required).
+2. **File mode** – Command‑line arguments are treated as filenames. The files are read in the order provided, their contents are concatenated (newline‑separated), and the combined text is sent to Ollama in a single prompt (no **THE END** required).
 
 For each input (whether interactive or from files), Ollama is given a prompt that builds a mental image and returns the following items:
-* Positive Stable Diffusion prompt
-* Negative Stable Diffusion prompt
-* CFG Scale
-* Optimum Image Resolution
-* Steps (Up to 500)
+
+* Positive Stable Diffusion prompt  
+* Negative Stable Diffusion prompt  
+* CFG Scale  
+* Optimum Image Resolution  
+* Steps (up to 500)  
 * Scheduler (one of the listed options)
-Additionally, the prompt now includes the instruction **“Use proper weights for drawn elements.”** to guide Ollama’s weighting of visual components.
-For each line received, ollama is given the appropriate prompt that builds a mental image inside of its context,  and then output following items that are projected based on that mental image:
-* Positive Stable Diffusion prompt
-* Negative Stable Diffusion prompt
-* CFG Scale
-* Optimum Image Resolution
-* Steps (Up to 500)
-* Scheduler Being One of the following:
-  - DDIM
-  - DDPM
-  - DEIS
-  - DEIS Karras
-  - DPM++ 2S
-  - DPM++ 2S Karras
-  - DPM++ 2M
-  - DPM++ 2M Karras
-  - DPM++ 2M SDE
-  - DPM++ 2M SDE Karras
-  - DPM 3M
-  - DPM 3M Karras
-  - DPM 3M SDE
-  - DPM 3M Karras
-  - Euler
-  - Euler Karras
-  - Eular Ancestral
-  - Heun
-  - Heun Karras
-  - KDPM 2
-  - KDPM 2 Karras
-  - KDPM 2 Ancestral
-  - KDPM 2 Ancestral Karras
-  - LCM
-  - LMS
-  - LMS Karras
-  - PNDM
-  - TCD
-  - UniPC
-  - UniPC Karras
-* Assume the model is Juggernaut XL v9
-* No LoRA
+
+**Additional instruction** – The prompt now includes the phrase **“Use proper weights for drawn elements.”** to guide Ollama’s weighting of visual components.
+
+**Model & CLI details**
+
+* The prompt presented to Ollama references **model Juggernaut XL v9, no LoRA**.  
+* The actual CLI call uses the `gemma3:27b` model (`ollama run gemma3:27b …`). This mismatch is intentional: the script keeps the placeholder CLI call while the prompt tells Ollama to assume the desired model.
+
+**Output handling**
+
+* An optional `-o <filename>` flag can be supplied; if present, the generated Stable Diffusion parameters are appended to the specified file in addition to being printed to stdout.
+
+**Scheduler list (as per design)**
+
+- DDIM
+- DDPM
+- DEIS
+- DEIS Karras
+- DPM++ 2S
+- DPM++ 2S Karras
+- DPM++ 2M
+- DPM++ 2M Karras
+- DPM++ 2M SDE
+- DPM++ 2M SDE Karras
+- DPM 3M
+- DPM 3M Karras
+- DPM 3M SDE
+- DPM 3M Karras
+- Euler
+- Euler Karras
+- Eular Ancestral
+- Heun
+- Heun Karras
+- KDPM 2
+- KDPM 2 Karras
+- KDPM 2 Ancestral
+- KDPM 2 Ancestral Karras
+- LCM
+- LMS
+- LMS Karras
+- PNDM
+- TCD
+- UniPC
+- UniPC Karras
+
+**Project state (as of 2025‑08‑24)**
+
+* `main.py` implements both interactive and file modes, includes the `-o` output flag, and uses the placeholder CLI call described above.  
+* The script falls back to deterministic placeholder output if the Ollama CLI invocation fails.  
+* No code writes back to `cline.md`; all documentation is now stored explicitly in `design.txt` and `cline.md`.  
+* The repository contains an example prompt description (`example1.txt`) and a comprehensive context file (`cline.md`) that aggregates all project artifacts.
 
 ---
 
-## example1.txt
+## Example Prompt (example1.txt)
+
 I am standing on a lush grassy field.
 The are seven kilometer high mountains in the far distance.
 The those mountains extend in both direction for a very great distance.
@@ -118,7 +110,8 @@ At the top of the great dark spire is bright iridescent light casting upwards a 
 
 ---
 
-## main.py
+## Source Code (main.py)
+
 #!/usr/bin/env python3
 \"\"\"
 Stable Diffusion Prompt Builder using Ollama.
