@@ -1,0 +1,1 @@
+# Package initialization for better_stable_diffusion_prompts
