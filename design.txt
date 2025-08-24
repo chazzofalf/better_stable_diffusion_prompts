@@ -1,0 +1,42 @@
+Create a python project that based on a conversation with ollama it progressively builds a stable diffusion prompt.
+Input is received line by line until "THE END" is encounter at which point the program ends.
+For each line update the conversational context and then output following items that are projected:
+* Positive Stable Diffusion prompt
+* Negative Stable Diffusion prompt
+* CFG Scale
+* Optimum Image Resolution
+* Steps (Up to 500)
+* Scheduler Being One of the following:
+  - DDIM
+  - DDPM
+  - DEIS
+  - DEIS Karras
+  - DPM++ 2S
+  - DPM++ 2S Karras
+  - DPM++ 2M
+  - DPM++ 2M Karras
+  - DPM++ 2M SDE
+  - DPM++ 2M SDE Karras
+  - DPM 3M
+  - DPM 3M Karras
+  - DPM 3M SDE
+  - DPM 3M Karras
+  - Euler
+  - Euler Karras
+  - Eular Ancestral
+  - Heun
+  - Heun Karras
+  - KDPM 2
+  - KDPM 2 Karras
+  - KDPM 2 Ancestral
+  - KDPM 2 Ancestral Karras
+  - LCM
+  - LMS
+  - LMS Karras
+  - PNDM
+  - TCD
+  - UniPC
+  - UniPC Karras
+* Assume the model is Juggernaut XL v9
+* No LoRA
+
