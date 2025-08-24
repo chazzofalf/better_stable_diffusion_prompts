@@ -37,7 +37,7 @@ An optional `-o <filename>` flag lets you append the generated parameters to a f
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/yourusername/stable_diffusion_prompt_builder.git
+   git clone https://github.com/chazzofalf/better_stable_diffusion_prompts
    cd stable_diffusion_prompt_builder
    ```
 
