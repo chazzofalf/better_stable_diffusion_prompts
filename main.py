@@ -55,7 +55,7 @@ def main():
         if line == "THE END":
             break
         # Append to mental context
-        context += f" {line}"
+        context += f"\n{line}"
         # Build prompt for Ollama
         ollama_prompt = f"Based on the accumulated description:{context}\nProvide the following items:\n- Positive Stable Diffusion prompt\n- Negative Stable Diffusion prompt\n- CFG Scale\n- Optimum Image Resolution\n- Steps (up to 500)\n- Scheduler (choose from the allowed list): {', '.join(SCHEDULERS)}\nAssume model gemma3:27b, no LoRA."
         output = call_ollama(ollama_prompt)
