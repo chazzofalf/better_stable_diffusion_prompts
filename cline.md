@@ -1,17 +1,20 @@
 # Project Context – Detailed
 
-This document contains the complete source code and documentation for the **better_stable_diffusion_prompts** project. It is intended to be a single source of truth that can be used to reconstruct the entire repository from scratch.
+This document contains the complete source code, documentation, and environment setup instructions for the **better_stable_diffusion_prompts** project. It is intended to be a single source of truth that can be used to reconstruct the entire repository from scratch, set up a Python virtual environment, and run the utility exactly as originally designed.
 
 ---
 
 ## Table of Contents
 1. [Project Overview](#project-overview)  
-2. [File Index](#file-index)  
+2. [Environment Setup](#environment-setup)  
+3. [File Index](#file-index)  
    - [Root Files](#root-files)  
    - [Package Files](#package-files)  
-3. [File Contents](#file-contents)  
+4. [File Contents](#file-contents)  
    - [Root Files](#root-files-1)  
    - [Package Files](#package-files-1)  
+5. [License](#license)  
+6. [TODO](#todo)  
 
 ---
 
@@ -20,19 +23,51 @@ This document contains the complete source code and documentation for the **bett
 
 ---
 
+## Environment Setup
+The project relies **only on the Python standard library**; no third‑party packages are required.
+
+### 1. Create a Python virtual environment
+```bash
+python3 -m venv .venv
+```
+
+### 2. Activate the virtual environment
+```bash
+source .venv/bin/activate
+```
+*All subsequent commands should be run while the virtual environment is active.*
+
+### 3. Install requirements (if any)
+```bash
+pip install -r requirements.txt
+```
+> **Note:** `requirements.txt` currently contains only comments because the project has no external dependencies.
+
+### 4. Verify the environment
+```bash
+python -m better_stable_diffusion_prompts --help
+```
+or run the legacy entry point:
+```bash
+./main.py --help
+```
+
+---
+
 ## File Index
 
 ### Root Files
 | Path | Description |
 |------|-------------|
-| `cline.md` | This context file (you are reading it). |
+| `cline.md` | This comprehensive context file (you are reading it). |
 | `design.txt` | Design specification, scheduler list, and high‑level description of functionality. |
 | `example1.txt` | Sample description used for prompt generation. |
 | `LICENSE` | MIT license with explicit attribution and patent exclusion. |
 | `README.md` | User‑facing documentation, installation, and usage guide. |
-| `TODO` | Currently empty – placeholder for future tasks. |
+| `TODO` | Placeholder for future tasks (currently empty). |
 | `setup.py` | setuptools configuration for packaging and installation. |
 | `main.py` | Legacy entry point that forwards to the package’s `__main__`. |
+| `requirements.txt` | Lists required Python packages (none for this project). |
 | `better_stable_diffusion_prompts/` | Python package directory. |
 | `.venv/` | Python virtual environment (created during setup). |
 
@@ -290,7 +325,7 @@ CFG Scale: 7
 Resolution: 512px
 Steps: 50
 Scheduler: DDIM
---- End --------------------------------------
+--- End -------------------------------
 ```
 
 When Ollama is available, the output will contain realistic prompts and settings based on the description.
@@ -399,7 +434,11 @@ if __name__ == "__main__":
     sys.exit(_main())
 ```
 
-### Package Files
+#### `requirements.txt`
+```text
+# No external Python dependencies required for this project.
+# The project relies only on the Python standard library.
+```
 
 #### `better_stable_diffusion_prompts/__init__.py`
 ```python
@@ -554,7 +593,8 @@ if __name__ == "__main__":
     main()
 ```
 
----
+### License
+See `LICENSE` file above.
 
-## Final Notes
-All source files, documentation, and licensing information are now captured in this `cline.md`. With this file you could recreate the entire repository, install the package in a fresh environment, and run the utility exactly as originally designed.
+### TODO
+*(currently empty)*

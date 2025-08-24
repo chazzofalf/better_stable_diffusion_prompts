@@ -1,0 +1,2 @@
+# No external Python dependencies required for this project.
+# The project relies only on the Python standard library.
