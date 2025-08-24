@@ -1,0 +1,2 @@
+[console_scripts]
+better-stable-diffusion = better_stable_diffusion_prompts.__main__:main

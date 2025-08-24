@@ -1,0 +1,10 @@
+LICENSE
+README.md
+setup.py
+better_stable_diffusion_prompts/__init__.py
+better_stable_diffusion_prompts/__main__.py
+better_stable_diffusion_prompts.egg-info/PKG-INFO
+better_stable_diffusion_prompts.egg-info/SOURCES.txt
+better_stable_diffusion_prompts.egg-info/dependency_links.txt
+better_stable_diffusion_prompts.egg-info/entry_points.txt
+better_stable_diffusion_prompts.egg-info/top_level.txt

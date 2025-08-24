@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: better_stable_diffusion_prompts
+Version: 0.1.0
+Summary: Utility to build Stable Diffusion prompts using Ollama
+Author: Charles T Montgomery
+Author-email: charles.montgomery@hotmail.com
+Requires-Python: >=3.9
+License-File: LICENSE
+Dynamic: author
+Dynamic: author-email
+Dynamic: license-file
+Dynamic: requires-python
+Dynamic: summary
