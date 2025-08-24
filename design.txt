@@ -1,6 +1,6 @@
-Create a python project that based on a conversation with ollama it progressively builds a stable diffusion prompt.
+Create a python project that will use ollama to progressively build a stable diffusion prompt.
 Input is received line by line until "THE END" is encounter at which point the program ends.
-For each line update the conversational context and then output following items that are projected:
+For each line received, ollama is given the appropriate prompt that builds a mental image inside of its context,  and then output following items that are projected based on that mental image:
 * Positive Stable Diffusion prompt
 * Negative Stable Diffusion prompt
 * CFG Scale
