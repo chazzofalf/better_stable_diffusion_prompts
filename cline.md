@@ -26,3 +26,10 @@ The current implementation includes a placeholder `call_ollama` function that ge
 
 ## Assistant Context
 Implemented full support for command‑line file input (concatenating files in the order provided), interactive line‑by‑line mode with `THE END` sentinel, updated the Ollama model to **gemma3:27b**, included the full scheduler list in the prompt, added deterministic placeholder output for fallback, and removed all previous attempts to write context to `cline.md` as requested. The script now prints Ollama’s raw, human‑readable response for each invocation.
+
+## Assistant Context Update (2025-08-24)
+- Added the final version of the script with correct model prompt (“Assume model Juggernaut XL v9, no LoRA”) while keeping the CLI call to `gemma3:27b` as required.
+- Ensured command‑line file input processes files in the order given and exits without waiting for `THE END`.
+- Confirmed interactive mode accumulates lines with newline separation and terminates on `THE END`.
+- Removed all code that wrote context to `cline.md` as previously requested.
+- Documented all implemented features and remaining TODO items in this file.

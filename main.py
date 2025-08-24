@@ -75,7 +75,7 @@ def main():
             "- Optimum Image Resolution\n"
             "- Steps (up to 500)\n"
             f"- Scheduler (choose from the allowed list): {', '.join(SCHEDULERS)}\n"
-            "Assume model gemma3:27b, no LoRA."
+            "Assume model Juggernaut XL v9, no LoRA."
         )
         output = call_ollama(ollama_prompt)
 
@@ -108,7 +108,7 @@ def main():
             "- Optimum Image Resolution\n"
             "- Steps (up to 500)\n"
             f"- Scheduler (choose from the allowed list): {', '.join(SCHEDULERS)}\n"
-            "Assume model gemma3:27b, no LoRA."
+            "Assume model Juggernaut XL v9, no LoRA."
         )
         output = call_ollama(ollama_prompt)
 
