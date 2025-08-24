@@ -68,6 +68,7 @@ def main():
         # Build prompt for Ollama using the full concatenated context
         ollama_prompt = (
             f"Based on the accumulated description:{context}\n"
+            "Use proper weights for drawn elements.\n"
             "Provide the following items:\n"
             "- Positive Stable Diffusion prompt\n"
             "- Negative Stable Diffusion prompt\n"
@@ -101,6 +102,20 @@ def main():
         # Build prompt for Ollama
         ollama_prompt = (
             f"Based on the accumulated description:{context}\n"
+            "Use proper weights for drawn elements.\n"
+            "Provide the following items:\n"
+            "- Positive Stable Diffusion prompt\n"
+            "- Negative Stable Diffusion prompt\n"
+            "- CFG Scale\n"
+            "- Optimum Image Resolution\n"
+            "- Steps (up to 500)\n"
+            f"- Scheduler (choose from the allowed list): {', '.join(SCHEDULERS)}\n"
+            "Assume model Juggernaut XL v9, no LoRA."
+        )
+        # Build prompt for Ollama
+        ollama_prompt = (
+            f"Based on the accumulated description:{context}\n"
+            "Use proper weights for drawn elements.\n"
             "Provide the following items:\n"
             "- Positive Stable Diffusion prompt\n"
             "- Negative Stable Diffusion prompt\n"
