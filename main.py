@@ -48,12 +48,19 @@ def call_ollama(prompt: str) -> str:
         )
 
 def main():
-    # If command‑line arguments are supplied, treat each as a filename.
-    # Read all files in the order provided, concatenate their contents,
-    # send a single prompt to Ollama, output the result, save the context
-    # to cline.md and exit.
-    if len(sys.argv) > 1:
-        filenames = sys.argv[1:]
+    # Optional output file handling (-o <filename>)
+    output_file = None
+    # Determine if an output file flag is present
+    args = sys.argv[1:]
+    if "-o" in args:
+        o_index = args.index("-o")
+        if o_index + 1 < len(args):
+            output_file = args[o_index + 1]
+            # Remove the flag and filename from args
+            args = args[:o_index] + args[o_index + 2:]
+    # Remaining args are treated as input filenames (if any)
+    if len(args) > 0:
+        filenames = args
         # Read and concatenate file contents with newline separation
         try:
             contents = []
@@ -85,12 +92,57 @@ def main():
         print(output)
         print("--- End --------------------------------------\n")
 
-        # Context saving removed (file input mode)
+        # If an output file was specified, write the output there as well
+        if output_file:
+            try:
+                with open(output_file, "a", encoding="utf-8") as out_f:
+                    out_f.write(output + "\n")
+            except Exception as e:
+                print(f"Failed to write output to {output_file}: {e}")
 
         # Exit after processing file inputs
         sys.exit(0)
 
     # No command‑line arguments: fall back to interactive line‑by‑line mode
+    print("Enter lines of description (type 'THE END' on a line by itself to finish):")
+    context = ""
+    for line in sys.stdin:
+        line = line.strip()
+        if line == "THE END":
+            break
+        # Append to mental context
+        context += f"\n{line}"
+        # Build prompt for Ollama
+        ollama_prompt = (
+            f"Based on the accumulated description:{context}\n"
+            "Use proper weights for drawn elements.\n"
+            "Provide the following items:\n"
+            "- Positive Stable Diffusion prompt\n"
+            "- Negative Stable Diffusion prompt\n"
+            "- CFG Scale\n"
+            "- Optimum Image Resolution\n"
+            "- Steps (up to 500)\n"
+            f"- Scheduler (choose from the allowed list): {', '.join(SCHEDULERS)}\n"
+            "Assume model Juggernaut XL v9, no LoRA."
+        )
+        output = call_ollama(ollama_prompt)
+
+        # Output the generated parameters
+        print("\n--- Generated Stable Diffusion Parameters ---")
+        print(output)
+        print("--- End --------------------------------------\n")
+
+        # If an output file was specified, write the output there as well
+        if output_file:
+            try:
+                with open(output_file, "a", encoding="utf-8") as out_f:
+                    out_f.write(output + "\n")
+            except Exception as e:
+                print(f"Failed to write output to {output_file}: {e}")
+
+        # Context saving removed (interactive mode)
+
+    print("Program terminated. No further input will be processed.")
     print("Enter lines of description (type 'THE END' on a line by itself to finish):")
     context = ""
     for line in sys.stdin:
