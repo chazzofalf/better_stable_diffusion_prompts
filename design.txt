@@ -24,6 +24,11 @@ For each input (whether interactive or from files), Ollama is given a prompt tha
 **Output handling**
 
 * An optional `-o <filename>` flag can be supplied; if present, the generated Stable Diffusion parameters are appended to the specified file in addition to being printed to stdout.
+* An optional `-m <model>` flag allows specifying an alternative Ollama model name (default `gemma3:27b`). Example usage:
+
+  ```bash
+  ./main.py -m llama2:13b description.txt
+  ```
 
 **Scheduler list (as per design)**
 

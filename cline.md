@@ -1,6 +1,6 @@
-# Project Context – Detailed
+# Project Context – Detailed Reconstruction Guide
 
-This document contains the complete source code, documentation, and environment setup instructions for the **better_stable_diffusion_prompts** project. It is intended to be a single source of truth that can be used to reconstruct the entire repository from scratch, set up a Python virtual environment, and run the utility exactly as originally designed.
+This document provides a complete snapshot of the **better_stable_diffusion_prompts** repository, enabling a fresh reconstruction of the entire project, including all source files, documentation, and configuration.
 
 ---
 
@@ -19,36 +19,27 @@ This document contains the complete source code, documentation, and environment 
 ---
 
 ## Project Overview
-`better_stable_diffusion_prompts` is a Python utility that builds Stable Diffusion prompts using Ollama. It supports both interactive and file‑based modes and can be executed either via the legacy `main.py` script or as a module (`python -m better_stable_diffusion_prompts`). The project is installable from source with `pip install .` and provides a console script entry point `better-stable-diffusion`.
+`better_stable_diffusion_prompts` is a Python utility that builds Stable Diffusion prompts using **Ollama**. It supports interactive line‑by‑line input and batch file processing, outputs a set of generation parameters, and allows optional output redirection (`-o`) and model selection (`-m`).
 
 ---
 
 ## Environment Setup
-The project relies **only on the Python standard library**; no third‑party packages are required.
+The project relies solely on the Python standard library.
 
-### 1. Create a Python virtual environment
+### Steps
 ```bash
+# 1. Create virtual environment
 python3 -m venv .venv
-```
 
-### 2. Activate the virtual environment
-```bash
+# 2. Activate it
 source .venv/bin/activate
-```
-*All subsequent commands should be run while the virtual environment is active.*
 
-### 3. Install requirements (if any)
-```bash
+# 3. Install requirements (none required, but kept for future use)
 pip install -r requirements.txt
-```
-> **Note:** `requirements.txt` currently contains only comments because the project has no external dependencies.
 
-### 4. Verify the environment
-```bash
+# 4. Verify installation
 python -m better_stable_diffusion_prompts --help
-```
-or run the legacy entry point:
-```bash
+# or using the legacy script
 ./main.py --help
 ```
 
@@ -60,13 +51,13 @@ or run the legacy entry point:
 | Path | Description |
 |------|-------------|
 | `cline.md` | This comprehensive context file (you are reading it). |
-| `design.txt` | Design specification, scheduler list, and high‑level description of functionality. |
+| `design.txt` | Design specification, scheduler list, and high‑level description of functionality (now includes `-m` flag). |
 | `example1.txt` | Sample description used for prompt generation. |
 | `LICENSE` | MIT license with explicit attribution and patent exclusion. |
-| `README.md` | User‑facing documentation, installation, and usage guide. |
+| `README.md` | User‑facing documentation, installation, usage, and now documents the `-m` flag. |
 | `TODO` | Placeholder for future tasks (currently empty). |
-| `setup.py` | setuptools configuration for packaging and installation. |
-| `main.py` | Legacy entry point that forwards to the package’s `__main__`. |
+| `setup.py` | `setuptools` configuration for packaging and installation. |
+| `main.py` | Legacy entry point forwarding to package `__main__`. |
 | `requirements.txt` | Lists required Python packages (none for this project). |
 | `better_stable_diffusion_prompts/` | Python package directory. |
 | `.venv/` | Python virtual environment (created during setup). |
@@ -75,7 +66,7 @@ or run the legacy entry point:
 | Path | Description |
 |------|-------------|
 | `__init__.py` | Marks the directory as a Python package. |
-| `__main__.py` | Implements the full CLI logic (interactive & file modes). |
+| `__main__.py` | Implements the full CLI logic, now supports `-m` for model selection. |
 
 ---
 
@@ -111,6 +102,11 @@ For each input (whether interactive or from files), Ollama is given a prompt tha
 **Output handling**
 
 * An optional `-o <filename>` flag can be supplied; if present, the generated Stable Diffusion parameters are appended to the specified file in addition to being printed to stdout.
+* An optional `-m <model>` flag allows specifying an alternative Ollama model name (default `gemma3:27b`). Example usage:
+
+  ```bash
+  ./main.py -m llama2:13b description.txt
+  ```
 
 **Scheduler list (as per design)**
 
@@ -147,7 +143,7 @@ For each input (whether interactive or from files), Ollama is given a prompt tha
 
 **Project state (as of 2025‑08‑24)**
 
-* `main.py` implements both interactive and file modes, includes the `-o` output flag, and uses the placeholder CLI call described above.  
+* `main.py` implements both interactive and file modes, includes the `-o` output flag, and now the `-m` model flag.  
 * The script falls back to deterministic placeholder output if the Ollama CLI invocation fails.  
 * No code writes back to `cline.md`; all documentation is now stored explicitly in `design.txt` and `cline.md`.  
 * The repository contains an example prompt description (`example1.txt`) and a comprehensive context file (`cline.md`) that aggregates all project artifacts.
@@ -247,7 +243,12 @@ For every input (interactive line or concatenated file text) Ollama is asked to 
 The prompt always includes the instruction **“Use proper weights for drawn elements.”** and references **model Juggernaut XL v9, no LoRA**.  
 The actual CLI call uses the placeholder model `gemma3:27b` (`ollama run gemma3:27b …`). If the Ollama CLI fails, deterministic placeholder output is returned.
 
-An optional `-o <filename>` flag lets you append the generated parameters to a file in addition to printing them to stdout.
+An optional `-o <filename>` flag lets you append the generated parameters to a file in addition to printing them to stdout.  
+A new optional `-m <model>` flag lets you specify a different Ollama model (default `gemma3:27b`). Example:
+
+```bash
+./main.py -m llama2:13b description.txt
+```
 
 ## Features
 
@@ -256,6 +257,7 @@ An optional `-o <filename>` flag lets you append the generated parameters to a f
 - **Weight hint** (`Use proper weights for drawn elements.`) to improve prompt quality  
 - **Fallback placeholder** output for environments without Ollama installed  
 - Simple **output redirection** via `-o` flag  
+- Model selection via `-m` flag  
 
 ## Installation
 
@@ -390,7 +392,9 @@ Contributions are welcome! Feel free to open an issue or submit a pull request.
 ```
 
 #### `TODO`
+```text
 *(currently empty)*
+```
 
 #### `setup.py`
 ```python
@@ -476,7 +480,7 @@ SCHEDULERS = [
     "LCM", "LMS", "LMS Karras", "PNDM", "TCD", "UniPC", "UniPC Karras"
 ]
 
-def call_ollama(prompt: str) -> str:
+def call_ollama(prompt: str, model: str = "gemma3:27b") -> str:
     """
     Calls the Ollama CLI with the specified model and prompt.
     Returns the raw text output from Ollama.
@@ -484,7 +488,7 @@ def call_ollama(prompt: str) -> str:
     """
     try:
         result = subprocess.run(
-            ["ollama", "run", "gemma3:27b", prompt],
+            ["ollama", "run", model, prompt],
             capture_output=True,
             text=True,
             check=True,
@@ -514,6 +518,15 @@ def main() -> None:
             # Remove flag and filename from args
             args = args[:o_index] + args[o_index + 2:]
 
+    # Detect and extract -m flag for model name
+    model = "gemma3:27b"
+    if "-m" in args:
+        m_index = args.index("-m")
+        if m_index + 1 < len(args):
+            model = args[m_index + 1]
+            # Remove flag and model name from args
+            args = args[:m_index] + args[m_index + 2:]
+
     # If remaining args are filenames, process them
     if args:
         filenames = args
@@ -539,7 +552,7 @@ def main() -> None:
             f"- Scheduler (choose from the allowed list): {', '.join(SCHEDULERS)}\\n"
             "Assume model Juggernaut XL v9, no LoRA."
         )
-        output = call_ollama(ollama_prompt)
+        output = call_ollama(ollama_prompt, model)
 
         print("\\n--- Generated Stable Diffusion Parameters ---")
         print(output)
@@ -574,7 +587,7 @@ def main() -> None:
             f"- Scheduler (choose from the allowed list): {', '.join(SCHEDULERS)}\\n"
             "Assume model Juggernaut XL v9, no LoRA."
         )
-        output = call_ollama(ollama_prompt)
+        output = call_ollama(ollama_prompt, model)
 
         print("\\n--- Generated Stable Diffusion Parameters ---")
         print(output)
@@ -593,8 +606,8 @@ if __name__ == "__main__":
     main()
 ```
 
-### License
-See `LICENSE` file above.
+## License
+See the `LICENSE` file above.
 
-### TODO
+## TODO
 *(currently empty)*

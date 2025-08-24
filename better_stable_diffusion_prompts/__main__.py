@@ -27,7 +27,7 @@ SCHEDULERS = [
     "LCM", "LMS", "LMS Karras", "PNDM", "TCD", "UniPC", "UniPC Karras"
 ]
 
-def call_ollama(prompt: str) -> str:
+def call_ollama(prompt: str, model: str = "gemma3:27b") -> str:
     """
     Calls the Ollama CLI with the specified model and prompt.
     Returns the raw text output from Ollama.
@@ -35,7 +35,7 @@ def call_ollama(prompt: str) -> str:
     """
     try:
         result = subprocess.run(
-            ["ollama", "run", "gemma3:27b", prompt],
+            ["ollama", "run", model, prompt],
             capture_output=True,
             text=True,
             check=True,
@@ -65,6 +65,15 @@ def main() -> None:
             # Remove flag and filename from args
             args = args[:o_index] + args[o_index + 2:]
 
+    # Detect and extract -m flag for model name
+    model = "gemma3:27b"
+    if "-m" in args:
+        m_index = args.index("-m")
+        if m_index + 1 < len(args):
+            model = args[m_index + 1]
+            # Remove flag and model name from args
+            args = args[:m_index] + args[m_index + 2:]
+
     # If remaining args are filenames, process them
     if args:
         filenames = args
@@ -90,7 +99,7 @@ def main() -> None:
             f"- Scheduler (choose from the allowed list): {', '.join(SCHEDULERS)}\\n"
             "Assume model Juggernaut XL v9, no LoRA."
         )
-        output = call_ollama(ollama_prompt)
+        output = call_ollama(ollama_prompt, model)
 
         print("\\n--- Generated Stable Diffusion Parameters ---")
         print(output)
@@ -125,7 +134,7 @@ def main() -> None:
             f"- Scheduler (choose from the allowed list): {', '.join(SCHEDULERS)}\\n"
             "Assume model Juggernaut XL v9, no LoRA."
         )
-        output = call_ollama(ollama_prompt)
+        output = call_ollama(ollama_prompt, model)
 
         print("\\n--- Generated Stable Diffusion Parameters ---")
         print(output)

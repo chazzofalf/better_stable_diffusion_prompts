@@ -24,6 +24,14 @@ The actual CLI call uses the placeholder model `gemma3:27b` (`ollama run gemma3:
 
 An optional `-o <filename>` flag lets you append the generated parameters to a file in addition to printing them to stdout.
 
+A new optional `-m <model>` flag allows you to specify the Ollama model name to use instead of the default `gemma3:27b`. Example:
+
+```bash
+./main.py -m llama2:13b description.txt
+```
+
+This will pass `llama2:13b` to the Ollama CLI call.
+
 ## Features
 
 - **Dual input modes** (interactive & file‑based)  
