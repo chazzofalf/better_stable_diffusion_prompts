@@ -1,7 +1,5 @@
 # Project Context – Detailed Reconstruction Guide
 
-This document provides a complete snapshot of the **better_stable_diffusion_prompts** repository, enabling a fresh reconstruction of the entire project, including all source files, documentation, and configuration.
-
 ---
 
 ## Table of Contents
@@ -19,7 +17,7 @@ This document provides a complete snapshot of the **better_stable_diffusion_prom
 ---
 
 ## Project Overview
-`better_stable_diffusion_prompts` is a Python utility that builds Stable Diffusion prompts using **Ollama**. It supports interactive line‑by‑line input and batch file processing, outputs a set of generation parameters, and allows optional output redirection (`-o`) and model selection (`-m`).
+`better_stable_diffusion_prompts` is a Python utility that builds Stable Diffusion prompts using **Ollama**. It supports interactive line‑by‑line input and batch file processing, outputs a set of generation parameters, and allows optional output redirection (`-o`) and model selection (`-m` flag).
 
 ---
 
@@ -51,10 +49,10 @@ python -m better_stable_diffusion_prompts --help
 | Path | Description |
 |------|-------------|
 | `cline.md` | This comprehensive context file (you are reading it). |
-| `design.txt` | Design specification, scheduler list, and high‑level description of functionality (now includes `-m` flag). |
+| `design.txt` | Design specification, scheduler list, and high‑level description of functionality (includes `-m` flag). |
 | `example1.txt` | Sample description used for prompt generation. |
 | `LICENSE` | MIT license with explicit attribution and patent exclusion. |
-| `README.md` | User‑facing documentation, installation, usage, and now documents the `-m` flag. |
+| `README.md` | User‑facing documentation, installation, usage, and now documents the `-m` flag and showcases graphics. |
 | `TODO` | Placeholder for future tasks (currently empty). |
 | `setup.py` | `setuptools` configuration for packaging and installation. |
 | `main.py` | Legacy entry point forwarding to package `__main__`. |
@@ -143,7 +141,7 @@ For each input (whether interactive or from files), Ollama is given a prompt tha
 
 **Project state (as of 2025‑08‑24)**
 
-* `main.py` implements both interactive and file modes, includes the `-o` output flag, and now the `-m` model flag.  
+* `main.py` implements both interactive and file modes, includes the `-o` output flag, and uses the placeholder CLI call described above.  
 * The script falls back to deterministic placeholder output if the Ollama CLI invocation fails.  
 * No code writes back to `cline.md`; all documentation is now stored explicitly in `design.txt` and `cline.md`.  
 * The repository contains an example prompt description (`example1.txt`) and a comprehensive context file (`cline.md`) that aggregates all project artifacts.
@@ -237,18 +235,21 @@ For every input (interactive line or concatenated file text) Ollama is asked to 
 - Negative Stable Diffusion prompt  
 - CFG Scale  
 - Optimum Image Resolution  
-- Number of steps (up to 500)  
+- Steps (up to 500)  
 - Scheduler (chosen from a predefined list)
 
 The prompt always includes the instruction **“Use proper weights for drawn elements.”** and references **model Juggernaut XL v9, no LoRA**.  
 The actual CLI call uses the placeholder model `gemma3:27b` (`ollama run gemma3:27b …`). If the Ollama CLI fails, deterministic placeholder output is returned.
 
-An optional `-o <filename>` flag lets you append the generated parameters to a file in addition to printing them to stdout.  
-A new optional `-m <model>` flag lets you specify a different Ollama model (default `gemma3:27b`). Example:
+An optional `-o <filename>` flag lets you append the generated parameters to a file in addition to printing them to stdout.
+
+A new optional `-m <model>` flag allows you to specify the Ollama model name to use instead of the default `gemma3:27b`. Example:
 
 ```bash
 ./main.py -m llama2:13b description.txt
 ```
+
+This will pass `llama2:13b` to the Ollama CLI call.
 
 ## Features
 
@@ -257,7 +258,6 @@ A new optional `-m <model>` flag lets you specify a different Ollama model (defa
 - **Weight hint** (`Use proper weights for drawn elements.`) to improve prompt quality  
 - **Fallback placeholder** output for environments without Ollama installed  
 - Simple **output redirection** via `-o` flag  
-- Model selection via `-m` flag  
 
 ## Installation
 
@@ -327,7 +327,7 @@ CFG Scale: 7
 Resolution: 512px
 Steps: 50
 Scheduler: DDIM
---- End -------------------------------
+--- End ------------------------------
 ```
 
 When Ollama is available, the output will contain realistic prompts and settings based on the description.
@@ -389,6 +389,12 @@ Contributions are welcome! Feel free to open an issue or submit a pull request.
 ---
 
 *Happy prompting!*
+
+## Example Outputs
+
+![The Favored One](example_image_outputs/the_favored_one.png)
+
+![Near the Darkspire](example_image_outputs/near_the_darkspire_from_example1.png)
 ```
 
 #### `TODO`
@@ -438,11 +444,7 @@ if __name__ == "__main__":
     sys.exit(_main())
 ```
 
-#### `requirements.txt`
-```text
-# No external Python dependencies required for this project.
-# The project relies only on the Python standard library.
-```
+### Package Files
 
 #### `better_stable_diffusion_prompts/__init__.py`
 ```python
@@ -461,7 +463,7 @@ This module can be executed as a script via:
 It supports two modes:
 1. Interactive mode – reads lines from stdin until a line containing exactly "THE END".
 2. File mode – accepts one or more filenames as command‑line arguments,
-   concatenates their contents (newline‑separated), and sends the combined text
+   concatenates their contents (newline‑separated) and sends the combined text
    to Ollama in a single prompt.
 """
 
@@ -597,14 +599,16 @@ def main() -> None:
             try:
                 with open(output_file, "a", encoding="utf-8") as out_f:
                     out_f.write(output + "\\n")
-            except Exception as e:
-                print(f"Failed to write output to {output_file}: {e}")
+                except Exception as e:
+                    print(f"Failed to write output to {output_file}: {e}")
 
     print("Program terminated. No further input will be processed.")
 
 if __name__ == "__main__":
     main()
 ```
+
+---
 
 ## License
 See the `LICENSE` file above.

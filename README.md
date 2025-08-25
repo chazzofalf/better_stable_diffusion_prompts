@@ -170,3 +170,9 @@ Contributions are welcome! Feel free to open an issue or submit a pull request.
 ---
 
 *Happy prompting!*
+
+## Example Outputs
+
+![The Favored One](example_image_outputs/the_favored_one.png)
+
+![Near the Darkspire](example_image_outputs/near_the_darkspire_from_example1.png)
